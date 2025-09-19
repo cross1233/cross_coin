@@ -110,17 +110,18 @@ aptos move view \
 ```
 
 ## 使用部署的合约
+V2加上
 
 ### 1. 检查池子状态
 ```bash
 aptos move view \
-  --function-id YOUR_ADDRESS::liquidity_provider::is_pool_exists
+  --function-id YOUR_ADDRESS::liquidity_provider_v2::is_pool_exists
 ```
 
 ### 2. 查看用户余额
 ```bash
 aptos move view \
-  --function-id YOUR_ADDRESS::liquidity_provider::get_user_balances \
+  --function-id YOUR_ADDRESS::liquidity_provider_v2::get_user_balances \
   --args address:YOUR_ADDRESS
 ```
 
@@ -128,7 +129,7 @@ aptos move view \
 ```bash
 # 添加 1 USDC + 0.1 APT 的流动性，价格范围 ±20%
 aptos move run \
-  --function-id YOUR_ADDRESS::liquidity_provider::add_usdc_apt_liquidity \
+  --function-id YOUR_ADDRESS::liquidity_provider_v2::add_usdc_apt_liquidity \
   --args u64:1000000 u64:10000000 u32:20
 ```
 
