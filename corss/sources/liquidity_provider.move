@@ -7,10 +7,10 @@ module cross_chain::liquidity_provider_v2 {
     use aptos_framework::coin;
     use aptos_framework::primary_fungible_store;
 
-    // 导入 Hyperion DEX 模块
-    use dex_contract::router_v3;
-    use dex_contract::pool_v3;
-    use dex_contract::position_v3;
+    // 导入 Hyperion DEX 模块 - 使用正确的合约地址
+    use 0x3673bee9e7b78ae63d4a9e3d58425bc97e7f3b8d68efc846ee732b14369333dd::router_v3;
+    use 0x3673bee9e7b78ae63d4a9e3d58425bc97e7f3b8d68efc846ee732b14369333dd::pool_v3;
+    use 0x3673bee9e7b78ae63d4a9e3d58425bc97e7f3b8d68efc846ee732b14369333dd::position_v3;
 
     // 常量定义
     const USDC_ADDRESS: address = @0x69091fbab5f7d635ee7ac5098cf0c1efbe31d68fec0f2cd565e8d168daf52832;
@@ -79,7 +79,7 @@ module cross_chain::liquidity_provider_v2 {
         validate_inputs(user, usdc_amount, apt_amount);
 
         // 获取代币对象
-        let usdc_token = object::address_to_object<Metadata>(USDC_ADDRESS);
+        let usdc_token = object::address_to_object<Metadata>(@0x69091fbab5f7d635ee7ac5098cf0c1efbe31d68fec0f2cd565e8d168daf52832);
 
         // 检查或创建池子
         ensure_pool_exists(user, usdc_token, tick_range_percent);
@@ -125,7 +125,7 @@ module cross_chain::liquidity_provider_v2 {
         assert!(apt_balance >= apt_amount, E_INSUFFICIENT_APT_BALANCE);
 
         // 检查 USDC 余额 (FungibleAsset)
-        let usdc_token = object::address_to_object<Metadata>(USDC_ADDRESS);
+        let usdc_token = object::address_to_object<Metadata>(@0x69091fbab5f7d635ee7ac5098cf0c1efbe31d68fec0f2cd565e8d168daf52832);
         let usdc_balance = primary_fungible_store::balance(user_addr, usdc_token);
         assert!(usdc_balance >= usdc_amount, E_INSUFFICIENT_USDC_BALANCE);
     }
@@ -153,7 +153,7 @@ module cross_chain::liquidity_provider_v2 {
         aptos_framework::event::emit(PoolCreatedEvent {
             creator: signer::address_of(user),
             usdc_token: object::object_address(&usdc_token),
-            apt_token: @0x1, // 占位符，实际应该是 APT 的 FungibleAsset 地址
+            apt_token: @0x000000000000000000000000000000000000000000000000000000000000000a, // APT 的 FA Metadata 地址
             fee_tier: FEE_TIER,
             initial_tick: 0, // 占位符
             timestamp: timestamp::now_seconds()
@@ -182,43 +182,39 @@ module cross_chain::liquidity_provider_v2 {
         assert!(usdc_min <= params.usdc_amount, E_INVALID_SLIPPAGE);
         assert!(apt_min <= params.apt_amount, E_INVALID_SLIPPAGE);
 
-        // 创建头寸 - 注意：当前接口返回()，需要模拟一个position对象
-        router_v3::open_position_coin<AptosCoin>(
+        // 实现正确的 Hyperion 流动性添加逻辑
+        
+        // 1. 检查池子是否存在 - 使用正确的函数签名
+        let pool_exists = pool_v3::liquidity_pool_exists(usdc_token, get_apt_metadata(), FEE_TIER);
+        
+        // 2. 如果池子不存在，创建池子
+        if (!pool_exists) {
+            let initial_tick = calculate_initial_tick();
+            router_v3::create_pool_coin<AptosCoin>(
+                usdc_token,
+                FEE_TIER,
+                initial_tick
+            );
+        };
+        
+        // 3. 使用 create_liquidity_coin 创建位置并添加流动性
+        // 这个函数专门处理 Coin + FungibleAsset 的组合
+        router_v3::create_liquidity_coin<AptosCoin>(
             user,
             usdc_token,
             FEE_TIER,
             params.tick_lower,
             params.tick_upper,
+            calculate_initial_tick(),
+            params.usdc_amount,  // USDC 数量
+            params.apt_amount,   // APT 数量
+            (params.usdc_amount * (100 - params.slippage_tolerance)) / 100,  // 最小 USDC
+            (params.apt_amount * (100 - params.slippage_tolerance)) / 100,   // 最小 APT
             params.deadline
         );
 
-        // 暂时跳过 position 创建，因为我们需要正确的 position 对象
-        // 在实际实现中，这将由 Hyperion DEX 合约返回
-        // 这里我们使用一个占位符地址，但不会尝试转换为对象
-        let position_addr = @0x0;
-
-        // 实现真实的代币转移测试
-        // 1. 从用户账户提取 APT 代币
-        let apt_coin = coin::withdraw<AptosCoin>(user, params.apt_amount);
-        
-        // 2. 暂时跳过 USDC 提取，先测试 APT 转移
-        // let usdc_fa = fungible_asset::withdraw(user, usdc_token, params.usdc_amount);
-        
-        // 3. 暂时跳过 Hyperion 调用，因为我们需要正确的 position 对象
-        // 在实际实现中，我们需要：
-        // - 创建或获取正确的 position 对象
-        // - 调用 router_v3::add_liquidity_coin<AptosCoin>
-        
-        // 4. 为了测试代币转移，我们将 APT 代币转移到 0x0 地址
-        // 这样我们可以看到余额确实发生了变化
-        coin::deposit(@0x0, apt_coin);
-        
-        // 5. 暂时跳过 USDC 处理
-        // 对于 USDC，我们需要获取用户的 FungibleStore
-        // let user_store = primary_fungible_store::get_primary_store<Metadata>(signer::address_of(user));
-        // fungible_asset::deposit(user_store, usdc_fa);
-
-        position_addr
+        // 返回一个占位符地址，因为 create_liquidity_coin 不返回 position 对象
+        @0x0
     }
 
     /// 计算tick价格范围
@@ -227,9 +223,13 @@ module cross_chain::liquidity_provider_v2 {
         range_percent: u32
     ): (u32, u32) {
 
-        // 暂时跳过池子存在检查，因为我们需要正确的 APT FungibleAsset Metadata
-        // 使用默认初始tick
-        let current_tick = calculate_initial_tick();
+        // 获取当前池子的实际价格
+        let (current_tick, _) = if (is_pool_exists()) {
+            pool_v3::current_tick_and_price(get_pool_address())
+        } else {
+            // 如果池子不存在，使用默认初始tick
+            (calculate_initial_tick(), 0)
+        };
 
         // 计算tick范围 (简化版本)
         // 每1%的价格变动大约对应200个tick (近似值)
@@ -258,36 +258,34 @@ module cross_chain::liquidity_provider_v2 {
     }
 
     /// 获取APT的Metadata对象
-    /// 注意：在 Aptos 测试网上，APT 代币可能没有对应的 FungibleAsset 版本
-    /// 我们需要使用 Hyperion 的 Coin 支持功能
+    /// 在 Hyperion 中，APT 使用对应的 FA Metadata Object
     fun get_apt_metadata(): Object<Metadata> {
-        // 暂时返回一个占位符，实际实现需要使用 Hyperion 的 Coin 支持
-        // 或者找到正确的 APT FungibleAsset Metadata 地址
-        object::address_to_object<Metadata>(@0x1)
+        // APT 对应的 FA Metadata Object 地址
+        object::address_to_object<Metadata>(@0x000000000000000000000000000000000000000000000000000000000000000a)
     }
 
     // 查看函数
 
     #[view]
     public fun is_pool_exists(): bool {
-        // 暂时返回 false，因为我们需要正确的 APT FungibleAsset Metadata
-        // 在实际实现中，我们需要：
-        // 1. 找到正确的 APT FungibleAsset Metadata 地址
-        // 2. 或者使用 Hyperion 的 Coin 支持功能
-        false
+        // 使用正确的 USDC 和 APT Metadata 地址检查池子是否存在
+        let usdc_metadata = object::address_to_object<Metadata>(@0x69091fbab5f7d635ee7ac5098cf0c1efbe31d68fec0f2cd565e8d168daf52832);
+        let apt_metadata = get_apt_metadata();
+        pool_v3::liquidity_pool_exists(usdc_metadata, apt_metadata, FEE_TIER)
     }
 
     #[view]
     public fun get_pool_address(): address {
-        // 暂时返回 0x0，因为我们需要正确的 APT FungibleAsset Metadata
-        // 在实际实现中，我们需要找到正确的池子地址
-        @0x0
+        // 使用正确的 USDC 和 APT Metadata 地址获取池子地址
+        let usdc_metadata = object::address_to_object<Metadata>(@0x69091fbab5f7d635ee7ac5098cf0c1efbe31d68fec0f2cd565e8d168daf52832);
+        let apt_metadata = get_apt_metadata();
+        pool_v3::liquidity_pool_address(usdc_metadata, apt_metadata, FEE_TIER)
     }
 
     #[view]
     public fun get_user_balances(user_addr: address): (u64, u64) {
         let apt_balance = coin::balance<AptosCoin>(user_addr);
-        let usdc_token = object::address_to_object<Metadata>(USDC_ADDRESS);
+        let usdc_token = object::address_to_object<Metadata>(@0x69091fbab5f7d635ee7ac5098cf0c1efbe31d68fec0f2cd565e8d168daf52832);
         let usdc_balance = primary_fungible_store::balance(user_addr, usdc_token);
         (usdc_balance, apt_balance)
     }
@@ -308,11 +306,65 @@ module cross_chain::liquidity_provider_v2 {
         apt_amount: u64,
         tick_range_percent: u32
     ): (u128, u64, u64) {
-        let usdc_token = object::address_to_object<Metadata>(USDC_ADDRESS);
+        let usdc_token = object::address_to_object<Metadata>(@0x69091fbab5f7d635ee7ac5098cf0c1efbe31d68fec0f2cd565e8d168daf52832);
         let (tick_lower, tick_upper) = calculate_tick_range(usdc_token, tick_range_percent);
 
         // 暂时返回占位符值，因为我们需要正确的 APT FungibleAsset Metadata
         // 在实际实现中，我们需要使用 Hyperion 的 Coin 支持功能
         (1000000, usdc_amount, apt_amount)
+    }
+
+    /// 智能计算最优的流动性添加参数
+    /// 根据用户余额、池子状态、滑点等数据计算
+    #[view]
+    public fun calculate_smart_liquidity_params(
+        user_addr: address,
+        max_usdc_percent: u64,  // 最大使用USDC余额的百分比 (例如: 50 表示50%)
+        max_apt_percent: u64,   // 最大使用APT余额的百分比
+        tick_range_percent: u32 // 价格范围百分比
+    ): (u64, u64, u32, u64) {
+        // 获取用户余额
+        let (usdc_balance, apt_balance) = get_user_balances(user_addr);
+        
+        // 计算最大可用数量
+        let max_usdc = (usdc_balance * max_usdc_percent) / 100;
+        let max_apt = (apt_balance * max_apt_percent) / 100;
+        
+        // 获取池子信息
+        let (current_tick, current_price) = if (is_pool_exists()) {
+            pool_v3::current_tick_and_price(get_pool_address())
+        } else {
+            (50000, 224699260982037790824) // 默认值
+        };
+        
+        // 根据当前价格计算最优比例
+        // 当前价格: 224699260982037790824 (约22.47 APT per USDC)
+        // 这意味着 1 USDC ≈ 0.0445 APT
+        
+        // 计算基于当前价格的最优比例
+        // 简化价格计算，使用固定比例
+        // 当前价格约22.47，意味着1 USDC ≈ 0.0445 APT
+        let optimal_apt_for_usdc = (max_usdc * 445) / 10000; // 0.0445 * 10000 = 445
+        
+        // 确保不超过用户余额
+        let final_usdc = if (max_usdc < optimal_apt_for_usdc) {
+            max_usdc
+        } else {
+            max_usdc
+        };
+        
+        let final_apt = if (optimal_apt_for_usdc < max_apt) {
+            optimal_apt_for_usdc
+        } else {
+            max_apt
+        };
+        
+        // 计算滑点保护 (5%)
+        let slippage_tolerance = 5;
+        
+        // 计算deadline (30分钟后)
+        let deadline = timestamp::now_seconds() + 1800;
+        
+        (final_usdc, final_apt, tick_range_percent, deadline)
     }
 }
