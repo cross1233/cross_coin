@@ -1,13 +1,15 @@
-# Base到Aptos跨链流动性提供平台
+# Base到Aptos跨链DeFi平台
 
-一个完整的Base测试网到Aptos测试网的跨链流动性提供平台，支持USDC跨链转账和USDC/APT流动性提供。
+一个完整的Base测试网到Aptos测试网的跨链DeFi解决方案，集成了USDC跨链转账和流动性提供功能。
 
 ## 🌟 项目概述
 
-本项目实现了从Base Sepolia到Aptos Testnet的完整DeFi流程：
-1. **跨链转账**: 使用Circle CCTP协议将USDC从Base跨链到Aptos
+本项目实现了从Base Sepolia到Aptos Testnet的完整DeFi生态系统：
+
+1. **跨链桥接**: 使用Circle CCTP协议安全地将USDC从Base跨链到Aptos
 2. **流动性提供**: 在Aptos上为USDC/APT交易对提供流动性
-3. **LP代币管理**: 获得流动性提供者代币(LP Token)
+3. **LP代币管理**: 获得和管理流动性提供者代币
+4. **DeFi集成**: 完整的跨链DeFi工作流程
 
 ## 🚀 核心功能
 
@@ -25,51 +27,80 @@
 - ✅ **滑点保护** 防止价格滑点过大
 - ✅ **LP代币记录** 流动性位置管理
 
-## 📋 项目架构
+## 📋 项目结构
 
 ```
-corss/
-├── src/                           # TypeScript跨链模块
-│   ├── base-sender.ts            # Base链发送器
-│   ├── circle-attestation.ts     # Circle签名获取
-│   ├── aptos-receiver.ts         # Aptos接收器
-│   ├── cross-chain-orchestrator.ts # 跨链编排器
-│   ├── usdc-coinstore-register.ts # USDC存储注册
-│   └── index.ts                  # 主入口文件
-├── sources/                      # Move合约源码
-│   ├── liquidity_provider.move   # 流动性提供合约
-│   └── liquidity_test.move       # 测试模块
-├── examples/                     # 示例代码
-│   └── complete-example.ts       # 完整跨链示例
-├── tests/                        # 测试文件
-├── Move.toml                     # Move项目配置
-├── package.json                  # Node.js依赖
-└── README.md                     # 本文档
+corss1.0/
+├── corss/                          # 主项目目录
+│   ├── src/                        # TypeScript跨链模块
+│   │   ├── base-sender.ts          # Base链发送器
+│   │   ├── circle-attestation.ts   # Circle签名获取
+│   │   ├── aptos-receiver.ts       # Aptos接收器
+│   │   ├── cross-chain-orchestrator.ts # 跨链编排器
+│   │   └── index.ts                # 主入口文件
+│   ├── sources/                    # Move合约源码
+│   │   ├── liquidity_provider.move # 流动性提供合约
+│   │   └── liquidity_test.move     # 测试模块
+│   ├── examples/                   # 示例代码
+│   │   └── complete-example.ts     # 完整跨链示例
+│   ├── tests/                      # 测试文件
+│   ├── Move.toml                   # Move项目配置
+│   ├── package.json                # Node.js依赖
+│   └── README.md                   # 项目详细文档
+├── hyperion-interface/             # Hyperion DEX接口
+│   └── sources/v3/                 # v3版本接口
+├── scripts/                        # 部署和测试脚本
+├── DEPLOYMENT_GUIDE.md             # 部署指南
+├── USDC_APT_LIQUIDITY_MVP.md       # 技术方案文档
+├── USAGE_GUIDE.md                  # 使用指南
+└── README.md                       # 本文档
 ```
 
-## 🛠️ 环境要求
+## 🛠️ 技术栈
 
-### 基础环境
-- **Node.js** >= 18.0.0
-- **TypeScript** >= 5.0.0
-- **Aptos CLI** (最新版本)
-- **Git**
+### 前端/后端
+- **TypeScript** - 跨链逻辑实现
+- **Node.js** - 运行环境
+- **ethers.js** - Base链交互
+- **Aptos SDK** - Aptos链交互
 
-### 钱包要求
-- **MetaMask** 或其他EVM钱包 (Base链)
-- **Petra** 或其他Aptos钱包
-- **测试代币** Base Sepolia USDC + Aptos Testnet APT
+### 智能合约
+- **Move** - Aptos智能合约语言
+- **Aptos Framework** - Aptos官方框架
+- **Hyperion DEX** - 去中心化交易所接口
+
+### 跨链协议
+- **Circle CCTP** - 官方跨链协议
+- **Circle Attestation** - 跨链验证服务
 
 ## 🚀 快速开始
 
-### 1. 安装依赖
+### 1. 环境准备
+
+```bash
+# 安装Node.js (>= 18.0.0)
+# 安装Aptos CLI
+curl -fsSL https://aptos.dev/scripts/install_cli.py | python3
+
+# 验证安装
+aptos --version
+```
+
+### 2. 克隆项目
+
+```bash
+git clone <your-repo-url>
+cd corss1.0
+```
+
+### 3. 安装依赖
 
 ```bash
 cd corss
 npm install
 ```
 
-### 2. 编译项目
+### 4. 编译项目
 
 ```bash
 # 编译TypeScript
@@ -79,7 +110,7 @@ npm run build
 npm run move:build
 ```
 
-### 3. 配置环境
+### 5. 配置环境
 
 ```bash
 # 初始化Aptos配置
@@ -89,24 +120,14 @@ aptos init --network testnet
 aptos account fund-with-faucet --account YOUR_ADDRESS
 ```
 
-### 4. 运行完整示例
-
-```bash
-# 运行跨链+流动性提供示例
-npm run example cross-chain
-
-# 查看余额
-npm run example balance
-```
-
 ## 📖 使用指南
 
 ### 跨链转账
 
-#### 编程接口
+#### 1. 编程接口使用
 
 ```typescript
-import { crossChainOrchestrator, FullCrossChainParams } from './src';
+import { crossChainOrchestrator, FullCrossChainParams } from './corss/src';
 
 const params: FullCrossChainParams = {
   amount: '1.0',                    // USDC数量
@@ -119,23 +140,28 @@ const result = await crossChainOrchestrator.executeCrossChain(params);
 console.log('跨链结果:', result);
 ```
 
-#### 命令行使用
+#### 2. 命令行使用
 
 ```bash
+cd corss
 # 运行完整跨链示例
-node examples/complete-example.js
+npm run example cross-chain
+
+# 查看余额
+npm run example balance
 ```
 
 ### 流动性提供
 
-#### 部署合约
+#### 1. 部署合约
 
 ```bash
+cd corss
 # 部署流动性提供合约
 aptos move publish --named-addresses cross_chain=YOUR_ADDRESS
 ```
 
-#### 添加流动性
+#### 2. 添加流动性
 
 ```bash
 # 添加 1 USDC + 0.1 APT 流动性，价格范围 ±20%
@@ -144,7 +170,7 @@ aptos move run \
   --args u64:1000000 u64:10000000 u32:20
 ```
 
-#### 查看状态
+#### 3. 查看状态
 
 ```bash
 # 检查池子是否存在
@@ -164,10 +190,12 @@ aptos move view \
 **Base Sepolia:**
 - RPC: `https://sepolia.base.org`
 - Chain ID: `84532`
+- 测试USDC: `0x036CbD53842c5426634e7929541eC2318f3dCF7e`
 
 **Aptos Testnet:**
 - RPC: `https://fullnode.testnet.aptoslabs.com`
 - Chain ID: `2`
+- 测试APT: 通过水龙头获取
 
 ### 合约地址
 
@@ -188,47 +216,7 @@ aptos move view \
 - USDC (FungibleAsset): `0x69091fbab5f7d635ee7ac5098cf0c1efbe31d68fec0f2cd565e8d168daf52832`
 - USDC/APT池子: `0xdfcc8ea4d88f9e2463a2912e3c2bfe3ec4b8e6aeed29158e47111ea23eac8c09`
 
-### Move.toml配置
-
-```toml
-[addresses]
-cross_chain = "YOUR_ADDRESS"  # 你的部署地址
-hyperion_dex = "0x3673bee9e7b78ae63d4a9e3d58425bc97e7f3b8d68efc846ee732b14369333dd"
-dex_contract = "0x3673bee9e7b78ae63d4a9e3d58425bc97e7f3b8d68efc846ee732b14369333dd"
-
-[dependencies]
-dex = { local = "../hyperion-interface" }
-```
-
-## 🧪 测试
-
-### 单元测试
-
-```bash
-# 运行TypeScript测试
-npm test
-
-# 运行Move合约测试
-npm run move:test
-
-# 代码质量检查
-npm run lint
-```
-
-### 集成测试
-
-```bash
-# 测试跨链功能
-npm run example cross-chain
-
-# 测试余额查询
-npm run example balance
-
-# 测试账户创建
-npm run example create-account
-```
-
-## 📊 完整流程示例
+## 📊 完整流程
 
 ### 1. 跨链转账流程
 
@@ -261,6 +249,43 @@ graph TD
     D --> F[LP代币]
     F --> G[获得交易费用]
 ```
+
+## 🧪 测试
+
+### 单元测试
+
+```bash
+cd corss
+# 运行TypeScript测试
+npm test
+
+# 运行Move合约测试
+npm run move:test
+
+# 代码质量检查
+npm run lint
+```
+
+### 集成测试
+
+```bash
+cd corss
+# 测试跨链功能
+npm run example cross-chain
+
+# 测试余额查询
+npm run example balance
+
+# 测试账户创建
+npm run example create-account
+```
+
+## 📚 文档
+
+- **[corss/README.md](./corss/README.md)** - 详细的项目文档
+- **[DEPLOYMENT_GUIDE.md](./DEPLOYMENT_GUIDE.md)** - 部署指南
+- **[USDC_APT_LIQUIDITY_MVP.md](./USDC_APT_LIQUIDITY_MVP.md)** - 技术方案文档
+- **[USAGE_GUIDE.md](./USAGE_GUIDE.md)** - 使用指南
 
 ## 🔍 监控和查询
 
@@ -306,6 +331,7 @@ aptos move view \
 ### 可用脚本
 
 ```bash
+cd corss
 npm run build          # 编译TypeScript
 npm run dev            # 开发模式
 npm run test           # 运行测试
@@ -322,13 +348,12 @@ npm run move:publish   # 发布Move合约
 3. **集成其他DEX**: 替换Hyperion接口为其他DEX
 4. **添加新功能**: 扩展流动性管理功能
 
-## 📚 相关文档
+## 🌐 相关资源
 
-- [部署指南](../DEPLOYMENT_GUIDE.md)
-- [技术方案文档](../USDC_APT_LIQUIDITY_MVP.md)
-- [使用指南](../USAGE_GUIDE.md)
 - [Hyperion官方文档](https://docs.hyperion.xyz)
 - [Circle CCTP文档](https://developers.circle.com/stablecoins/docs/cctp-technical-reference)
+- [Aptos开发者文档](https://aptos.dev/)
+- [Base开发者文档](https://docs.base.org/)
 
 ## 🤝 贡献
 
@@ -342,13 +367,13 @@ npm run move:publish   # 发布Move合约
 
 ## 📄 许可证
 
-MIT License - 详见 [LICENSE](../LICENSE) 文件
+MIT License - 详见 [LICENSE](./LICENSE) 文件
 
 ## 🆘 支持
 
 如有问题，请通过以下方式寻求帮助：
 
-1. 查看[故障排除指南](../DEPLOYMENT_GUIDE.md#故障排除)
+1. 查看[故障排除指南](./DEPLOYMENT_GUIDE.md#故障排除)
 2. 在GitHub提交Issue
 3. 联系开发团队
 

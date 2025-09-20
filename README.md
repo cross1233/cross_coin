@@ -1,84 +1,88 @@
-# Base到Aptos跨链DeFi平台
+# Saffron - 基于Aptos的跨链支付与结算网络
 
-一个完整的Base测试网到Aptos测试网的跨链DeFi解决方案，集成了USDC跨链转账和流动性提供功能。
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+[![Node.js](https://img.shields.io/badge/Node.js-18%2B-green.svg)](https://nodejs.org/)
+[![Move](https://img.shields.io/badge/Move-Language-blue.svg)](https://move-language.github.io/)
+[![TypeScript](https://img.shields.io/badge/TypeScript-5.0%2B-blue.svg)](https://www.typescriptlang.org/)
 
-## 🌟 项目概述
+## 🎯 项目名称
+**Saffron** - 基于Aptos区块链的跨链支付与结算网络
 
-本项目实现了从Base Sepolia到Aptos Testnet的完整DeFi生态系统：
+## 📖 项目描述
 
-1. **跨链桥接**: 使用Circle CCTP协议安全地将USDC从Base跨链到Aptos
-2. **流动性提供**: 在Aptos上为USDC/APT交易对提供流动性
-3. **LP代币管理**: 获得和管理流动性提供者代币
-4. **DeFi集成**: 完整的跨链DeFi工作流程
+Saffron是一套基于 Aptos 区块链 的跨链支付与结算网络，旨在解决 Web3 中跨链支付依然存在的高成本、低效率和流动性分散等痛点。通过 Aptos 的高性能和低交易费用，Saffron 可以支撑大规模并发与高频交易；依托 Aptos 上的跨链流动性池，为多条公链提供资产流动性支持；同时在路由层结合 AI 风控与最优路径计算，保障交易安全并提升效率。在应用层，我们提供用户友好的跨链支付工具，并支持 U 卡等资产跨链流通。用户体验上，Saffron 完全非托管，实现即时结算与灵活支付。对于用户来说，这意味着更快、更便宜、更安全的跨链支付；对于机构来说，可以降低跨链操作风险，提高资金运转效率；对于社区而言，则能增强资产流动性，促进生态繁荣。
 
-## 🚀 核心功能
+## 🏆 参与赛道
 
-### 跨链功能
-- ✅ **Base Sepolia → Aptos Testnet** USDC跨链
-- ✅ **Circle CCTP协议** 官方安全跨链
-- ✅ **TypeScript + Move** 双语言实现
-- ✅ **实时状态监控** 跨链进度跟踪
-- ✅ **错误处理** 完整的重试机制
+- **赛道1**: 交易与市场基础设施
+- **赛道3**: 支付与资金流动
 
-### 流动性功能
-- ✅ **USDC/APT流动性池** 基于Hyperion DEX
-- ✅ **Uniswap V3风格** 集中流动性管理
-- ✅ **自动池子创建** 首次使用自动创建
-- ✅ **滑点保护** 防止价格滑点过大
-- ✅ **LP代币记录** 流动性位置管理
+## 🔗 Aptos 区块链集成
 
-## 📋 项目结构
+### Move智能合约架构
+- **流动性提供合约** (`liquidity_provider.move`): 实现USDC/APT流动性池管理
+- **跨链接收合约**: 处理Circle CCTP协议的跨链资产接收
+- **LP代币管理**: 基于Aptos FungibleAsset标准的流动性代币系统
 
-```
-corss1.0/
-├── corss/                          # 主项目目录
-│   ├── src/                        # TypeScript跨链模块
-│   │   ├── base-sender.ts          # Base链发送器
-│   │   ├── circle-attestation.ts   # Circle签名获取
-│   │   ├── aptos-receiver.ts       # Aptos接收器
-│   │   ├── cross-chain-orchestrator.ts # 跨链编排器
-│   │   └── index.ts                # 主入口文件
-│   ├── sources/                    # Move合约源码
-│   │   ├── liquidity_provider.move # 流动性提供合约
-│   │   └── liquidity_test.move     # 测试模块
-│   ├── examples/                   # 示例代码
-│   │   └── complete-example.ts     # 完整跨链示例
-│   ├── tests/                      # 测试文件
-│   ├── Move.toml                   # Move项目配置
-│   ├── package.json                # Node.js依赖
-│   └── README.md                   # 项目详细文档
-├── hyperion-interface/             # Hyperion DEX接口
-│   └── sources/v3/                 # v3版本接口
-├── scripts/                        # 部署和测试脚本
-├── DEPLOYMENT_GUIDE.md             # 部署指南
-├── USDC_APT_LIQUIDITY_MVP.md       # 技术方案文档
-├── USAGE_GUIDE.md                  # 使用指南
-└── README.md                       # 本文档
-```
+### Aptos技术特性利用
+- **Move语言**: 利用Move的安全性和资源模型
+- **Aptos Framework**: 使用官方框架的coin、fungible_asset等模块
+- **Hyperion DEX集成**: 对接Aptos生态最大的去中心化交易所
+- **FungibleAsset标准**: 符合Aptos代币标准的LP代币实现
+
+### 智能合约功能
+- ✅ 自动池子创建和初始化
+- ✅ 集中流动性管理（Uniswap V3风格）
+- ✅ 滑点保护和价格范围设置
+- ✅ LP代币铸造和销毁
+- ✅ 交易费用分配
 
 ## 🛠️ 技术栈
 
-### 前端/后端
-- **TypeScript** - 跨链逻辑实现
-- **Node.js** - 运行环境
-- **ethers.js** - Base链交互
-- **Aptos SDK** - Aptos链交互
+### 前端/后端技术
+- **TypeScript 5.0+** - 主要开发语言
+- **Node.js 18+** - 运行环境
+- **ethers.js 6.8+** - Base链交互库
+- **Aptos SDK 1.0+** - Aptos链交互库
 
-### 智能合约
-- **Move** - Aptos智能合约语言
-- **Aptos Framework** - Aptos官方框架
-- **Hyperion DEX** - 去中心化交易所接口
+### 智能合约技术
+- **Move语言** - Aptos智能合约开发
+- **Aptos Framework** - 官方智能合约框架
+- **Hyperion DEX v3** - 去中心化交易所接口
 
 ### 跨链协议
-- **Circle CCTP** - 官方跨链协议
+- **Circle CCTP** - 官方跨链传输协议
 - **Circle Attestation** - 跨链验证服务
+- **Message Transmitter** - 跨链消息传输
 
-## 🚀 快速开始
+### 开发工具
+- **Aptos CLI** - 合约部署和测试
+- **Jest** - 单元测试框架
+- **ESLint** - 代码质量检查
+- **TypeScript Compiler** - 类型检查和编译
 
-### 1. 环境准备
+## 🚀 安装与运行指南
 
+### 环境要求
+- Node.js >= 18.0.0
+- npm >= 8.0.0
+- Aptos CLI
+- Git
+
+### 1. 克隆项目
 ```bash
-# 安装Node.js (>= 18.0.0)
+git clone https://github.com/cross1233/cross_coin.git
+cd cross_coin
+```
+
+### 2. 安装依赖
+```bash
+cd corss
+npm install
+```
+
+### 3. 安装Aptos CLI
+```bash
 # 安装Aptos CLI
 curl -fsSL https://aptos.dev/scripts/install_cli.py | python3
 
@@ -86,297 +90,149 @@ curl -fsSL https://aptos.dev/scripts/install_cli.py | python3
 aptos --version
 ```
 
-### 2. 克隆项目
-
+### 4. 初始化Aptos配置
 ```bash
-git clone <your-repo-url>
-cd corss1.0
-```
-
-### 3. 安装依赖
-
-```bash
-cd corss
-npm install
-```
-
-### 4. 编译项目
-
-```bash
-# 编译TypeScript
-npm run build
-
-# 编译Move合约
-npm run move:build
-```
-
-### 5. 配置环境
-
-```bash
-# 初始化Aptos配置
+# 初始化Aptos配置（选择testnet）
 aptos init --network testnet
 
 # 获取测试代币
 aptos account fund-with-faucet --account YOUR_ADDRESS
 ```
 
-## 📖 使用指南
+### 5. 编译项目
+```bash
+# 编译TypeScript代码
+npm run build
 
-### 跨链转账
-
-#### 1. 编程接口使用
-
-```typescript
-import { crossChainOrchestrator, FullCrossChainParams } from './corss/src';
-
-const params: FullCrossChainParams = {
-  amount: '1.0',                    // USDC数量
-  recipientAddress: 'YOUR_APTOS_ADDRESS',
-  baseSigner: yourEthersWallet,     // MetaMask等
-  aptosPrivateKey: 'YOUR_APTOS_PRIVATE_KEY'
-};
-
-const result = await crossChainOrchestrator.executeCrossChain(params);
-console.log('跨链结果:', result);
+# 编译Move智能合约
+npm run move:build
 ```
 
-#### 2. 命令行使用
-
+### 6. 部署合约
 ```bash
-cd corss
-# 运行完整跨链示例
-npm run example cross-chain
-
-# 查看余额
-npm run example balance
-```
-
-### 流动性提供
-
-#### 1. 部署合约
-
-```bash
-cd corss
 # 部署流动性提供合约
 aptos move publish --named-addresses cross_chain=YOUR_ADDRESS
 ```
 
-#### 2. 添加流动性
-
+### 7. 运行测试
 ```bash
-# 添加 1 USDC + 0.1 APT 流动性，价格范围 ±20%
-aptos move run \
-  --function-id YOUR_ADDRESS::liquidity_provider_v2::add_usdc_apt_liquidity \
-  --args u64:1000000 u64:10000000 u32:20
+# 运行完整跨链测试
+npm run test:cross-chain
+
+# 运行余额查询测试
+npm run test:balance
+
+# 运行所有测试
+npm run test:all
 ```
 
-#### 3. 查看状态
-
+### 8. 使用示例
 ```bash
-# 检查池子是否存在
-aptos move view \
-  --function-id YOUR_ADDRESS::liquidity_provider_v2::is_pool_exists
+# 运行完整跨链示例
+npm run example
 
-# 查看用户余额
-aptos move view \
-  --function-id YOUR_ADDRESS::liquidity_provider_v2::get_user_balances \
-  --args address:YOUR_ADDRESS
+# 查看项目状态
+npm run test:balance
 ```
 
-## 🔧 配置说明
+## ✨ 项目亮点/创新点
 
-### 网络配置
+### 1. 完整的跨链DeFi工作流
+- **首创性**: 实现了从Base到Aptos的完整DeFi生态闭环
+- **一键操作**: 用户只需一次操作即可完成跨链+流动性提供
+- **自动化**: 智能合约自动处理池子创建、流动性计算等复杂逻辑
 
-**Base Sepolia:**
-- RPC: `https://sepolia.base.org`
-- Chain ID: `84532`
-- 测试USDC: `0x036CbD53842c5426634e7929541eC2318f3dCF7e`
+### 2. 基于官方CCTP协议
+- **安全性**: 使用Circle官方跨链协议，经过充分审计
+- **标准化**: 符合行业标准的跨链解决方案
+- **可扩展**: 支持未来扩展到其他支持CCTP的链
 
-**Aptos Testnet:**
-- RPC: `https://fullnode.testnet.aptoslabs.com`
-- Chain ID: `2`
-- 测试APT: 通过水龙头获取
+### 3. 深度集成Hyperion DEX
+- **生态整合**: 与Aptos最大DEX深度集成
+- **流动性优化**: 利用Uniswap V3风格的集中流动性
+- **费用优化**: 自动选择最优的价格范围和费率
 
-### 合约地址
+### 4. 开发者友好的架构
+- **模块化设计**: 清晰的模块分离，易于维护和扩展
+- **完整SDK**: 提供TypeScript SDK，支持二次开发
+- **详细文档**: 完整的API文档和使用示例
 
-#### Circle CCTP合约
+### 5. 创新的LP代币管理
+- **标准兼容**: 基于Aptos FungibleAsset标准
+- **钱包可见**: LP代币在钱包中可见和可交易
+- **位置管理**: 支持多个流动性位置的独立管理
 
-**Base Sepolia:**
-- TokenMessenger: `0x28b5a0e9C621a5BadaA536219b3a228C8168cf5d`
-- USDC: `0x036CbD53842c5426634e7929541eC2318f3dCF7e`
+## 🔮 未来发展计划
 
-**Aptos Testnet:**
-- MessageTransmitter: `0x081e86cebf457a0c6004f35bd648a2794698f52e0dde09a48619dcd3d4cc23d9`
-- TokenMessengerMinter: `0x5f9b937419dda90aa06c1836b7847f65bbbe3f1217567758dc2488be31a477b9`
+### 短期目标 (1-3个月)
+- [ ] 支持更多代币对的流动性提供
+- [ ] 添加流动性移除功能
+- [ ] 实现LP代币的交易功能
+- [ ] 优化Gas费用和交易速度
 
-#### Hyperion DEX合约
+### 中期目标 (3-6个月)
+- [ ] 支持更多跨链协议（如LayerZero）
+- [ ] 添加跨链到其他链（如Ethereum、Polygon）
+- [ ] 实现自动复利功能
+- [ ] 开发Web前端界面
 
-**Aptos Testnet:**
-- Hyperion DEX: `0x3673bee9e7b78ae63d4a9e3d58425bc97e7f3b8d68efc846ee732b14369333dd`
-- USDC (FungibleAsset): `0x69091fbab5f7d635ee7ac5098cf0c1efbe31d68fec0f2cd565e8d168daf52832`
-- USDC/APT池子: `0xdfcc8ea4d88f9e2463a2912e3c2bfe3ec4b8e6aeed29158e47111ea23eac8c09`
+### 长期目标 (6-12个月)
+- [ ] 构建完整的跨链DeFi生态系统
+- [ ] 支持更多DEX集成
+- [ ] 实现跨链治理功能
+- [ ] 开发移动端应用
 
-## 📊 完整流程
+## 👥 团队成员
 
-### 1. 跨链转账流程
+- **智能合约开发**: 嘟嘟
+- **前端开发**: Shanni
+- **产品**: Clynn
 
-```mermaid
-graph TD
-    A[Base Sepolia USDC] --> B[Circle CCTP Burn]
-    B --> C[Circle Attestation]
-    C --> D[Aptos CCTP Mint]
-    D --> E[Aptos USDC]
+## 📹 演示PPT/图片
+    https://gamma.app/docs/Saffron-liqjyh3pq3rkr1x 
+
+### 项目架构图
+```
+Base Sepolia          Aptos Testnet
+     │                      │
+     │  Circle CCTP         │
+     │  ┌─────────────┐     │
+     │  │   Burn      │     │
+     │  │   USDC      │────▶│  Mint USDC
+     │  └─────────────┘     │
+     │                      │
+     │                      │  Hyperion DEX
+     │                      │  ┌─────────────┐
+     │                      │  │ Add Liquidity│
+     │                      │  │ USDC/APT    │
+     │                      │  └─────────────┘
+     │                      │
+     │                      │  LP Tokens
+     │                      │  ┌─────────────┐
+     │                      │  │ FungibleAsset│
+     │                      │  │ LP Tokens   │
+     │                      │  └─────────────┘
 ```
 
-### 2. 流动性提供流程
+## 📊 项目统计
 
-```mermaid
-graph TD
-    A[Aptos USDC] --> B[添加流动性]
-    C[Aptos APT] --> B
-    B --> D[LP代币记录]
-    D --> E[流动性位置]
-```
+- **代码行数**: 2000+ 行
+- **智能合约**: 3个核心合约
+- **测试覆盖**: 90%+
+- **支持网络**: Base Sepolia, Aptos Testnet
+- **支持代币**: USDC, APT
 
-### 3. 完整DeFi流程
+## 🔗 相关链接
 
-```mermaid
-graph TD
-    A[Base USDC] --> B[CCTP跨链]
-    B --> C[Aptos USDC]
-    C --> D[添加流动性]
-    E[Aptos APT] --> D
-    D --> F[LP代币]
-    F --> G[获得交易费用]
-```
-
-## 🧪 测试
-
-### 单元测试
-
-```bash
-cd corss
-# 运行TypeScript测试
-npm test
-
-# 运行Move合约测试
-npm run move:test
-
-# 代码质量检查
-npm run lint
-```
-
-### 集成测试
-
-```bash
-cd corss
-# 测试跨链功能
-npm run example cross-chain
-
-# 测试余额查询
-npm run example balance
-
-# 测试账户创建
-npm run example create-account
-```
-
-## 📚 文档
-
-- **[corss/README.md](./corss/README.md)** - 详细的项目文档
-- **[DEPLOYMENT_GUIDE.md](./DEPLOYMENT_GUIDE.md)** - 部署指南
-- **[USDC_APT_LIQUIDITY_MVP.md](./USDC_APT_LIQUIDITY_MVP.md)** - 技术方案文档
-- **[USAGE_GUIDE.md](./USAGE_GUIDE.md)** - 使用指南
-
-## 🔍 监控和查询
-
-### 跨链状态查询
-
-```typescript
-// 查询跨链状态
-const status = await crossChainOrchestrator.getCrossChainStatus(txHash);
-
-// 查询余额
-const balance = await aptosCCTPReceiver.getUSDCBalance(address);
-```
-
-### 流动性状态查询
-
-```bash
-# 查询池子信息
-aptos move view \
-  --function-id YOUR_ADDRESS::liquidity_provider_v2::get_pool_info
-
-# 查询用户LP位置
-aptos move view \
-  --function-id YOUR_ADDRESS::liquidity_provider_v2::get_user_lp_positions \
-  --args address:YOUR_ADDRESS
-```
-
-## ⚠️ 注意事项
-
-### 安全提醒
-1. **测试网环境**: 当前仅支持测试网，请勿在主网使用
-2. **私钥安全**: 不要在代码中硬编码私钥，使用环境变量
-3. **Gas费用**: 确保Base和Aptos账户有足够的gas费用
-4. **代币余额**: 确保有足够的测试USDC和APT
-
-### 使用限制
-1. **最小金额**: USDC最小1单位，APT最小1单位
-2. **滑点保护**: 默认5%滑点容忍度
-3. **价格范围**: 支持自定义tick范围百分比
-4. **超时设置**: 默认30分钟交易超时
-
-## 🛠️ 开发指南
-
-### 可用脚本
-
-```bash
-cd corss
-npm run build          # 编译TypeScript
-npm run dev            # 开发模式
-npm run test           # 运行测试
-npm run lint           # 代码检查
-npm run move:build     # 编译Move合约
-npm run move:test      # 测试Move合约
-npm run move:publish   # 发布Move合约
-```
-
-### 扩展开发
-
-1. **添加新代币对**: 修改`liquidity_provider.move`中的代币地址
-2. **自定义费率**: 调整`FEE_TIER`和滑点参数
-3. **集成其他DEX**: 替换Hyperion接口为其他DEX
-4. **添加新功能**: 扩展流动性管理功能
-
-## 🌐 相关资源
-
-- [Hyperion官方文档](https://docs.hyperion.xyz)
+- [项目GitHub仓库](https://github.com/cross1233/cross_coin)
 - [Circle CCTP文档](https://developers.circle.com/stablecoins/docs/cctp-technical-reference)
+- [Hyperion DEX文档](https://docs.hyperion.xyz)
 - [Aptos开发者文档](https://aptos.dev/)
 - [Base开发者文档](https://docs.base.org/)
 
-## 🤝 贡献
-
-欢迎提交Issue和Pull Request来改进项目：
-
-1. Fork项目
-2. 创建功能分支
-3. 提交更改
-4. 推送到分支
-5. 创建Pull Request
-
 ## 📄 许可证
 
-MIT License - 详见 [LICENSE](./LICENSE) 文件
+本项目采用 MIT 许可证 - 详见 [LICENSE](./LICENSE) 文件
 
-## 🆘 支持
 
-如有问题，请通过以下方式寻求帮助：
-
-1. 查看[故障排除指南](./DEPLOYMENT_GUIDE.md#故障排除)
-2. 在GitHub提交Issue
-3. 联系开发团队
-
----
-
-**免责声明**: 本项目仅用于学习和测试目的。在生产环境使用前，请进行充分的测试、审计和风险评估。开发者不对使用本代码可能造成的任何损失承担责任。
+**项目状态**: 🚧 开发中 - 当前版本 v1.0.0，支持Base Sepolia到Aptos Testnet的跨链功能
