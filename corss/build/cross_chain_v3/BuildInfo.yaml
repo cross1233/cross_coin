@@ -1,0 +1,66 @@
+---
+compiled_package_info:
+  package_name: cross_chain_v3
+  address_alias_instantiation:
+    Extensions: "0000000000000000000000000000000000000000000000000000000000000001"
+    aptos_framework: "0000000000000000000000000000000000000000000000000000000000000001"
+    aptos_fungible_asset: 000000000000000000000000000000000000000000000000000000000000000a
+    aptos_std: "0000000000000000000000000000000000000000000000000000000000000001"
+    aptos_token: "0000000000000000000000000000000000000000000000000000000000000003"
+    core_resources: 000000000000000000000000000000000000000000000000000000000a550c18
+    cross_chain: ba916e9cbf294e552e4281dfc227fadbd3413d81c2fc233816f85dd89d53f54c
+    deployer: 3673bee9e7b78ae63d4a9e3d58425bc97e7f3b8d68efc846ee732b14369333dd
+    dex_contract: 3673bee9e7b78ae63d4a9e3d58425bc97e7f3b8d68efc846ee732b14369333dd
+    hyperion_dex: 3673bee9e7b78ae63d4a9e3d58425bc97e7f3b8d68efc846ee732b14369333dd
+    message_transmitter: 081e86cebf457a0c6004f35bd648a2794698f52e0dde09a48619dcd3d4cc23d9
+    std: "0000000000000000000000000000000000000000000000000000000000000001"
+    token_messenger_minter: 5f9b937419dda90aa06c1836b7847f65bbbe3f1217567758dc2488be31a477b9
+    vm: "0000000000000000000000000000000000000000000000000000000000000000"
+    vm_reserved: "0000000000000000000000000000000000000000000000000000000000000000"
+  source_digest: D5AB0382EA39A2E4F50E0C8BF7F6542BCDA2FAA213610D112D344950B29F145E
+  build_flags:
+    dev_mode: false
+    test_mode: false
+    override_std: ~
+    generate_docs: false
+    generate_abis: false
+    generate_move_model: true
+    full_model_generation: true
+    install_dir: ~
+    force_recompilation: false
+    additional_named_addresses: {}
+    fetch_deps_only: false
+    skip_fetch_latest_git_deps: false
+    compiler_config:
+      bytecode_version: 7
+      known_attributes:
+        - bytecode_instruction
+        - deprecated
+        - event
+        - expected_failure
+        - "fmt::skip"
+        - legacy_entry_fun
+        - "lint::allow_unsafe_randomness"
+        - "lint::skip"
+        - module_lock
+        - "mutation::skip"
+        - native_interface
+        - persistent
+        - randomness
+        - resource_group
+        - resource_group_member
+        - test
+        - test_only
+        - verify_only
+        - view
+      skip_attribute_checks: false
+      compiler_version: V2_0
+      language_version: "2.1"
+      experiments:
+        - optimize=on
+dependencies:
+  - AptosFramework
+  - AptosStdlib
+  - MoveStdlib
+  - dex
+bytecode_deps: []
